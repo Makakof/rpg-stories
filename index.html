@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>As Páginas de Ivan Von Richten</title>
+  <style>
+    :root {
+      --paper: #d8bd83;
+      --paper-dark: #b18c52;
+      --ink: #2d1b0f;
+      --blood: #5a1111;
+      --shadow: rgba(18, 8, 2, 0.55);
+      --gold: #b38b3e;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      overflow-x: hidden;
+      color: var(--ink);
+      font-family: Georgia, 'Times New Roman', serif;
+      background:
+        radial-gradient(circle at 50% 25%, rgba(151, 93, 37, 0.25), transparent 34%),
+        radial-gradient(circle at 20% 80%, rgba(73, 13, 7, 0.35), transparent 30%),
+        linear-gradient(135deg, #090604 0%, #1b1008 43%, #0c0805 100%);
+    }
+
+    .fog {
+      position: fixed;
+      inset: -20%;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 20% 30%, rgba(213, 178, 122, .08), transparent 22%),
+        radial-gradient(circle at 70% 70%, rgba(255, 221, 145, .05), transparent 26%);
+      filter: blur(16px);
+      animation: drift 18s linear infinite alternate;
+      z-index: 0;
+    }
+
+    @keyframes drift {
+      from { transform: translate(-2%, -1%) scale(1); opacity: .55; }
+      to { transform: translate(3%, 2%) scale(1.06); opacity: .8; }
+    }
+
+    .stage {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 18px 24px;
+    }
+
+    .title {
+      color: #e0c48c;
+      text-align: center;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-size: clamp(18px, 3vw, 34px);
+      margin: 0 0 6px;
+      text-shadow: 0 0 18px rgba(183, 128, 54, .22), 0 2px 2px #000;
+    }
+
+    .subtitle {
+      color: #a78558;
+      text-align: center;
+      font-size: 14px;
+      margin-bottom: 20px;
+      font-style: italic;
+    }
+
+    .book-wrap {
+      perspective: 2500px;
+      width: min(1120px, 96vw);
+      height: min(690px, 73vh);
+      min-height: 520px;
+      position: relative;
+    }
+
+    .book {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      filter: drop-shadow(0 32px 40px rgba(0,0,0,.55));
+      transform: translateZ(0);
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+
+    .book.is-turning {
+      filter: drop-shadow(0 20px 26px rgba(0,0,0,.42));
+    }
+
+    .cover-glow {
+      position: absolute;
+      inset: 6px;
+      border-radius: 18px;
+      box-shadow: inset 0 0 65px rgba(55, 19, 5, .6), 0 0 70px rgba(124, 70, 25, .18);
+      pointer-events: none;
+      z-index: 50;
+    }
+
+    .page {
+      position: absolute;
+      top: 0;
+      width: 50%;
+      height: 100%;
+      background:
+        radial-gradient(circle at 20% 25%, rgba(255,255,230,.18), transparent 18%),
+        radial-gradient(circle at 82% 65%, rgba(70,25,7,.13), transparent 28%),
+        linear-gradient(90deg, rgba(88, 49, 15, .16), transparent 10%, transparent 90%, rgba(88, 49, 15, .16)),
+        var(--paper);
+      background-blend-mode: multiply;
+      border: 1px solid rgba(61, 32, 12, .38);
+      padding: clamp(24px, 4vw, 48px);
+      overflow: hidden;
+      box-shadow: inset 0 0 24px rgba(66, 31, 7, .28);
+      transform: translateZ(0);
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      contain: layout paint style;
+    }
+
+    .page::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(75, 39, 9, .035) 1px, transparent 1px),
+        radial-gradient(circle at 14% 18%, rgba(65, 29, 8, .12) 0 1px, transparent 2px),
+        radial-gradient(circle at 74% 40%, rgba(65, 29, 8, .10) 0 1px, transparent 2px),
+        radial-gradient(circle at 52% 78%, rgba(65, 29, 8, .12) 0 1px, transparent 2px);
+      background-size: 100% 32px, 210px 230px, 180px 240px, 260px 260px;
+      mix-blend-mode: multiply;
+      pointer-events: none;
+    }
+
+    .page.left {
+      left: 0;
+      border-radius: 16px 2px 2px 16px;
+      transform-origin: right center;
+    }
+
+    .page.right {
+      right: 0;
+      border-radius: 2px 16px 16px 2px;
+      transform-origin: left center;
+    }
+
+    .spine {
+      position: absolute;
+      left: calc(50% - 15px);
+      top: 0;
+      width: 30px;
+      height: 100%;
+      background: linear-gradient(90deg, rgba(0,0,0,.42), rgba(255,255,255,.08), rgba(0,0,0,.48));
+      z-index: 40;
+      pointer-events: none;
+      opacity: .55;
+    }
+
+    .turning-page {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 50%;
+      height: 100%;
+      transform-origin: left center;
+      transform-style: preserve-3d;
+      z-index: 60;
+      transition: transform 780ms cubic-bezier(.22,.61,.36,1);
+      will-change: transform;
+      transform: translate3d(0,0,0) rotateY(0deg);
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      contain: layout paint style;
+      pointer-events: none;
+    }
+
+    .turning-page.back {
+      right: auto;
+      left: 0;
+      transform-origin: right center;
+    }
+
+    .turning-page.flip-next { transform: translate3d(0,0,0) rotateY(-180deg); }
+    .turning-page.flip-prev { transform: translate3d(0,0,0) rotateY(180deg); }
+
+    .face {
+      position: absolute;
+      inset: 0;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      transform: translateZ(.01px);
+      will-change: transform;
+    }
+
+    .face.back-face { transform: rotateY(180deg); }
+
+    .content {
+      position: relative;
+      z-index: 2;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      transform: translateZ(0);
+    }
+
+    .chapter {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 2.3px;
+      color: var(--blood);
+      margin-bottom: 12px;
+      border-bottom: 1px solid rgba(90, 17, 17, .28);
+      padding-bottom: 9px;
+    }
+
+    h2 {
+      font-size: clamp(23px, 3vw, 36px);
+      line-height: 1.06;
+      margin: 0 0 18px;
+      color: #2b1609;
+      text-shadow: 0 1px rgba(255,255,255,.25);
+    }
+
+    p {
+      font-size: clamp(15px, 1.45vw, 19px);
+      line-height: 1.62;
+      margin: 0 0 13px;
+      text-align: justify;
+    }
+
+    .drop:first-letter {
+      float: left;
+      font-size: 58px;
+      line-height: .85;
+      padding-right: 8px;
+      color: var(--blood);
+      text-shadow: 1px 1px 0 rgba(255, 230, 170, .25);
+    }
+
+    .quote {
+      margin-top: auto;
+      padding: 14px 16px;
+      border-left: 3px solid rgba(90,17,17,.55);
+      background: rgba(80, 36, 9, .08);
+      font-style: italic;
+      color: #3c2112;
+    }
+
+    .folio {
+      position: absolute;
+      bottom: 18px;
+      font-size: 12px;
+      color: rgba(45,27,15,.62);
+      letter-spacing: 1.5px;
+    }
+    .left .folio { left: 30px; }
+    .right .folio { right: 30px; }
+
+    .smudge {
+      position: absolute;
+      width: 150px;
+      height: 90px;
+      border-radius: 50%;
+      background: rgba(69, 18, 9, .13);
+      filter: blur(18px);
+      transform: rotate(-16deg);
+      pointer-events: none;
+    }
+
+    .bloodmark {
+      position: absolute;
+      width: 65px;
+      height: 65px;
+      right: 44px;
+      bottom: 58px;
+      opacity: .18;
+      background:
+        radial-gradient(circle at 36% 38%, #5a1111 0 5px, transparent 7px),
+        radial-gradient(circle at 54% 40%, #5a1111 0 9px, transparent 11px),
+        radial-gradient(circle at 44% 56%, #5a1111 0 13px, transparent 15px),
+        radial-gradient(circle at 60% 62%, #5a1111 0 7px, transparent 9px);
+      filter: blur(.4px);
+      transform: rotate(18deg);
+    }
+
+
+    .book.is-turning .page::before {
+      mix-blend-mode: normal;
+      opacity: .62;
+    }
+
+    .book.is-turning .smudge,
+    .book.is-turning .bloodmark {
+      filter: none;
+      opacity: .08;
+    }
+
+    .controls {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      justify-content: center;
+      margin-top: 22px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      cursor: pointer;
+      border: 1px solid rgba(212, 174, 98, .42);
+      color: #ead2a0;
+      background: linear-gradient(#3a2110, #1b0d06);
+      padding: 11px 18px;
+      border-radius: 999px;
+      font-family: Georgia, 'Times New Roman', serif;
+      letter-spacing: .7px;
+      box-shadow: 0 8px 20px rgba(0,0,0,.35), inset 0 1px rgba(255,255,255,.08);
+      transition: transform .18s ease, filter .18s ease, opacity .18s ease;
+    }
+
+    button:hover:not(:disabled) { transform: translateY(-2px); filter: brightness(1.08); }
+    button:disabled { opacity: .38; cursor: not-allowed; }
+
+    .counter {
+      color: #b9965d;
+      min-width: 125px;
+      text-align: center;
+      font-size: 13px;
+      letter-spacing: 1px;
+    }
+
+    .hint {
+      color: rgba(232, 203, 151, .62);
+      font-size: 12px;
+      margin-top: 9px;
+      text-align: center;
+    }
+
+    .seal {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: min(230px, 48%);
+      aspect-ratio: 1;
+      border: 2px solid rgba(90,17,17,.24);
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: rgba(90,17,17,.2);
+      font-size: 70px;
+      pointer-events: none;
+    }
+
+    .cover-page {
+      background:
+        radial-gradient(circle at 50% 40%, rgba(194, 145, 72, .18), transparent 30%),
+        linear-gradient(135deg, #24110a, #4b2713 42%, #190b05);
+      color: #dec28c;
+      border: 1px solid rgba(198,151,81,.4);
+      box-shadow: inset 0 0 80px rgba(0,0,0,.55), inset 0 0 0 10px rgba(178,130,61,.09);
+    }
+
+    .cover-page h2, .cover-page p, .cover-page .chapter { color: #e1c38a; text-align: center; }
+    .cover-page .chapter { border-bottom-color: rgba(225,195,138,.2); }
+    .cover-page .quote { color: #cba96f; border-left: 0; text-align: center; background: transparent; }
+
+    @media (max-width: 900px) {
+      body { min-height: 100dvh; }
+
+      .stage {
+        min-height: 100dvh;
+        justify-content: flex-start;
+        padding: 18px 12px 18px;
+      }
+
+      .title {
+        font-size: clamp(18px, 6vw, 28px);
+        letter-spacing: 1.2px;
+        margin-top: 4px;
+      }
+
+      .subtitle {
+        max-width: 92vw;
+        font-size: 12px;
+        line-height: 1.35;
+        margin-bottom: 14px;
+      }
+
+      .book-wrap {
+        width: min(540px, 94vw);
+        height: min(72dvh, 720px);
+        min-height: 500px;
+        perspective: 1800px;
+        touch-action: pan-y;
+      }
+
+      .book { filter: drop-shadow(0 22px 28px rgba(0,0,0,.52)); }
+      .book.is-turning { filter: drop-shadow(0 14px 18px rgba(0,0,0,.38)); }
+      .spine { display: none; }
+      .cover-glow { border-radius: 16px; inset: 4px; }
+
+      #leftPage { display: none; }
+
+      .page,
+      .page.left,
+      .page.right {
+        width: 100%;
+        left: 0;
+        right: auto;
+        border-radius: 16px;
+        padding: 22px 18px 42px;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: thin;
+      }
+
+      .turning-page,
+      .turning-page.single {
+        width: 100%;
+        left: 0;
+        right: auto;
+        transform-origin: left center;
+      }
+
+      .turning-page.back,
+      .turning-page.single.back {
+        left: 0;
+        right: auto;
+        transform-origin: right center;
+      }
+
+      .turning-page.single .face.page {
+        width: 100%;
+        left: 0;
+        right: auto;
+        border-radius: 16px;
+      }
+
+      .chapter {
+        font-size: 11px;
+        letter-spacing: 1.25px;
+        margin-bottom: 10px;
+        padding-bottom: 8px;
+      }
+
+      h2 {
+        font-size: clamp(22px, 7vw, 30px);
+        line-height: 1.08;
+        margin-bottom: 14px;
+      }
+
+      p {
+        font-size: clamp(14.5px, 4.2vw, 17px);
+        line-height: 1.48;
+        text-align: left;
+        margin-bottom: 12px;
+      }
+
+      .quote {
+        margin-top: 14px;
+        padding: 11px 12px;
+        font-size: clamp(14px, 4vw, 16px);
+      }
+
+      .drop:first-letter {
+        font-size: 42px;
+        line-height: .9;
+        padding-right: 7px;
+      }
+
+      .folio {
+        bottom: 14px;
+        right: 20px !important;
+        left: auto !important;
+      }
+
+      .seal {
+        width: min(190px, 56%);
+        font-size: 58px;
+      }
+
+      .controls {
+        width: min(540px, 94vw);
+        margin-top: 14px;
+        gap: 8px;
+      }
+
+      button {
+        flex: 1 1 145px;
+        padding: 10px 12px;
+        font-size: 13px;
+      }
+
+      .counter {
+        order: 3;
+        width: 100%;
+        min-width: 0;
+        font-size: 12px;
+      }
+
+      .hint {
+        max-width: 92vw;
+        font-size: 11px;
+      }
+    }
+
+    @media (max-width: 420px) {
+      .stage { padding-inline: 9px; }
+      .book-wrap {
+        width: 96vw;
+        height: 70dvh;
+        min-height: 460px;
+      }
+      .page,
+      .page.left,
+      .page.right { padding: 20px 15px 40px; }
+      .subtitle { margin-bottom: 12px; }
+      .hint { display: none; }
+    }
+
+    @media (max-height: 560px) and (orientation: landscape) {
+      .stage { padding: 10px; }
+      .title { font-size: 18px; margin-bottom: 2px; }
+      .subtitle { display: none; }
+      .book-wrap { height: 68dvh; min-height: 330px; }
+      .page,
+      .page.left,
+      .page.right { padding: 16px 16px 34px; }
+      p { font-size: 13.5px; line-height: 1.35; }
+      .quote { display: none; }
+      .controls { margin-top: 8px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .fog { animation: none; }
+      .turning-page { transition: none; }
+      button { transition: none; }
+    }
+
+  </style>
+</head>
+<body>
+  <div class="fog"></div>
+  <main class="stage">
+    <h1 class="title">As Páginas de Ivan Von Richten</h1>
+    <div class="subtitle">autobiografia apócrifa encontrada entre couro, cinzas e instrumentos cirúrgicos</div>
+
+    <section class="book-wrap" aria-label="Livro interativo de Ivan Von Richten">
+      <div id="book" class="book">
+        <div class="spine"></div>
+        <div class="cover-glow"></div>
+        <div id="leftPage" class="page left"></div>
+        <div id="rightPage" class="page right"></div>
+      </div>
+    </section>
+
+    <div class="controls">
+      <button id="prevBtn">← Página anterior</button>
+      <div id="counter" class="counter"></div>
+      <button id="nextBtn">Próxima página →</button>
+    </div>
+    <div class="hint">Use as setas do teclado, os botões, toque nas laterais ou deslize para virar as páginas.</div>
+  </main>
+
+  <script>
+    const pages = [
+      {
+        cover: true,
+        chapter: 'Caderno I',
+        title: 'Ivan Von Richten',
+        body: [`Não escrevo para ser absolvido. Absolvição é um luxo reservado aos inteiros, aos limpos, aos que jamais precisaram rastejar por entre lama e vísceras para alcançar uma tigela de sopa fria.`, `Escrevo porque a memória também apodrece quando ninguém a abre.`],
+        quote: 'Se estas páginas tremem em suas mãos, leitor, talvez ainda haja algo humano em você.'
+      },
+      {
+        chapter: 'I — O nascimento durante o ruído',
+        title: 'Antes do primeiro passo',
+        body: [`Nasci durante a Última Guerra. Não houve presságio, estrela caída ou canto de parteiras. Houve ferro, febre, fumaça e o som distante de homens obedecendo ordens que depois jurariam não compreender.`, `Vim ao mundo quebrado. Esta foi a primeira palavra que aprendi sem que ninguém a dissesse diante de mim. Aleijado. Incapaz. Peso. Minha mãe nunca usou nenhuma delas, e por isso acreditei, por algum tempo, que talvez fossem mentiras.`],
+        drop: true,
+        quote: 'Minha mãe me carregava como quem carrega uma vela acesa contra uma tempestade.'
+      },
+      {
+        chapter: 'II — A mãe no campo de batalha',
+        title: 'A bondade entre os canhões',
+        body: [`Quando a guerra veio reclamar também os braços de meus pais, não havia lugar onde me deixar. Minha mãe me levou consigo. Não por coragem teatral, mas por ausência de escolha. A guerra sempre chama isso de dever.`, `Ela remendava uniformes, lavava feridas, dividia água com homens que na manhã seguinte seriam instruídos a matar desconhecidos. Tinha um coração indecente de tão bom. Eu a vi oferecer ternura a pessoas que jamais saberiam o nome dela.`],
+        quote: 'Eu era inútil aos generais, mas para ela eu ainda era um filho.'
+      },
+      {
+        chapter: 'III — A educação dos horrores',
+        title: 'O que os homens fazem quando ninguém os julga',
+        body: [`A infância, para muitos, tem cheiro de pão. A minha tinha cheiro de couro molhado, excremento, sangue coagulado e medo. Cresci vendo pessoas maltratarem pessoas e, ainda assim, reclamarem para si o título de civilizadas.`, `Vi prisioneiros implorarem por água. Vi soldados rirem. Vi curandeiros escolherem quem merecia viver pela utilidade que ainda possuía. A guerra, descobri cedo, não cria monstros. Ela apenas pede que os homens parem de fingir.`],
+        quote: 'Aprendi anatomia antes de aprender misericórdia. Talvez por isso tenha confiado mais na primeira.'
+      },
+      {
+        chapter: 'IV — Quando ela também foi quebrada',
+        title: 'A inutilidade é contagiosa',
+        body: [`O golpe que a derrubou não a matou. Seria uma clemência. Transformou-a em algo que o acampamento compreendia muito bem: um corpo sem serventia imediata.`, `Minha mãe, que havia cuidado de tantos, passou a depender de mãos que desviavam. Os mesmos homens que aceitavam suas compressas agora fingiam não ouvi-la. Os que a chamavam de santa passaram a chamá-la de incômodo com os olhos.`],
+        quote: 'Foi ali que compreendi: para muitos, a dignidade humana termina onde começa a dependência.'
+      },
+      {
+        chapter: 'V — Restos',
+        title: 'A mesa dos vivos',
+        body: [`Depois que ela morreu, não me expulsaram. Seria feio. Seria cruel demais para homens que ainda gostavam de dormir acreditando possuir honra. Então fizeram algo pior: permitiram que eu permanecesse.`, `Eu comia restos quando havia restos. Dormia onde o frio permitia. Entre corpos, fezes, botas e risadas. Era mantido vivo por uma espécie de piedade preguiçosa, dessas que não salvam ninguém, mas aliviam a consciência de quem observa.`],
+        quote: 'Não me abandonavam. Apenas me deixavam apodrecer por perto.'
+      },
+      {
+        chapter: 'VI — O primeiro conserto',
+        title: 'O soldado que riu por último',
+        body: [`Havia um soldado que gostava de me chamar de pedaço. Pedaço de homem. Pedaço de erro. Pedaço de nada. Um dia, ele se inclinou perto demais, confiante na perfeição de seus ossos e na pobreza dos meus.`, `Não me lembro de raiva explosiva. Lembro-me de silêncio. De cálculo. De uma pedra. De peso aplicado no lugar certo. De seu riso quebrando antes do crânio. Quando terminou, ele jazia inteiro no chão, e eu, quebrado, respirava sobre ele.`],
+        quote: 'Foi a primeira vez que entendi que a utilidade de um corpo muda conforme a mão que o governa.'
+      },
+      {
+        chapter: 'VII — O estudo',
+        title: 'Laboratórios a céu aberto',
+        body: [`A Última Guerra fez avançar as ciências com a pressa dos desesperados. O que em tempos de paz seria proibido, no front recebia verba, tenda e voluntários que não sabiam que haviam se voluntariado.`, `Pestes foram nomeadas como ferramentas. Aberrações foram registradas como soluções. Senhores do Horror eram sussurrados em relatórios fechados. Os campos de batalha eram bibliotecas abertas, se alguém tivesse estômago para ler.`],
+        quote: 'Eu estava cercado de conhecimento. E conhecimento, diferente da compaixão, não se importava com minhas pernas.'
+      },
+      {
+        chapter: 'VIII — Caminhar',
+        title: 'As pernas dos indignos',
+        body: [`Estudei arcanismo, anatomia, sutura, rejeição, dor. Aprendi que um nervo entende ordens quando convencido pela magia correta. Aprendi que carne morta ainda guarda segredos, e que carne viva mente menos quando aberta.`, `O primeiro passo não foi belo. Foi úmido, febril e imperfeito. Mas foi meu. Caminhei pela primeira vez já quase homem, apoiado em partes que antes pertenceram a alguém que as desperdiçara.`],
+        quote: 'O que foi quebrado pode ser consertado. O que está inteiro também pode ser melhor aproveitado.'
+      },
+      {
+        chapter: 'IX — O médico das margens',
+        title: 'Khorvaire e seus mutilados',
+        body: [`Viajei por Khorvaire porque a guerra não termina quando os tratados são assinados. Ela apenas se muda para dentro das casas. Encontrei veteranos sem braços, crianças sem olhos, mães sem voz, homens sem futuro.`, `Eu não perguntava se mereciam salvação. Perguntava o que haviam perdido. Um soldado recebeu um braço coberto de escamas e garras. Uma mulher cega passou a ver não apenas o rosto dos homens, mas as sombras que os seguiam de realidades próximas.`],
+        quote: 'Nunca prometi devolver ninguém ao que era. Prometi torná-los capazes de sobreviver ao que restou.'
+      },
+      {
+        chapter: 'X — Vingança por empréstimo',
+        title: 'As mãos que eu entreguei',
+        body: [`Dizem que forneci instrumentos de vingança. É possível. Também forneci pernas para fuga, olhos para vigilância, mandíbulas para defesa e pele que resistia ao fogo. O uso que faziam de meus dons pertencia a eles.`, `Eu nunca busquei vingança. Esta frase é verdadeira do mesmo modo que uma lâmina limpa é inocente. Eu apenas compreendia, melhor que a maioria, que certas pessoas só pedem justiça porque ainda não possuem dentes suficientes para pronunciá-la de outro modo.`],
+        quote: 'Não ensinei ninguém a odiar. Apenas ouvi o ódio que já estava lá e lhe dei articulações.'
+      },
+      {
+        chapter: 'XI — Doadores',
+        title: 'A origem das partes',
+        body: [`Perguntam de onde vinham os doadores. A pergunta sempre revela mais nojo que ética. Corpos desaparecem todos os dias: vítimas de doença, de crimes odiosos, de batalhas esquecidas, de autoridades apressadas em limpar ruas.`, `Nunca fiz questão de retirar partes dos vivos. Não daqueles que jamais atentaram contra mim. Há uma diferença, ainda que pequena, entre colher o que a morte abandonou e tomar de quem ainda está usando.`],
+        quote: 'Pequenas diferenças sustentam grandes consciências.'
+      },
+      {
+        chapter: 'XII — A linha',
+        title: 'Onde termina a cura',
+        body: [`Com o tempo, percebi que muitos não queriam apenas ser restaurados. Queriam ser mais. Mais fortes que os homens que os feriram. Mais rápidos que os soldados que riram. Mais terríveis que o mundo que os deixou para trás.`, `Eu deveria ter recusado alguns pedidos. Esta é a confissão que talvez esperem. Mas quem decide o limite? O curandeiro? O rei? O sacerdote que nunca precisou implorar por um corpo funcional?`],
+        quote: 'Quando um mundo inteiro chama os quebrados de monstros, não se deve estranhar quando alguns escolhem garras.'
+      },
+      {
+        chapter: 'XIII — O rancor disciplinado',
+        title: 'A calma como bisturi',
+        body: [`Treinei minha mente até que minha voz pudesse permanecer calma enquanto dentro de mim marchavam todos os mortos que vi ignorados. A raiva bruta é desperdiçada. O rancor, quando educado, torna-se método.`, `Falo baixo porque aprendi que gritos raramente mudam ossos. Uma incisão precisa, sim. Uma palavra no lugar certo. Uma escolha feita por alguém que acreditava não ter escolha.`],
+        quote: 'Não sou cruel por prazer. O prazer é vulgar. Sou cruel quando a crueldade revela uma verdade que a piedade tentou esconder.'
+      },
+      {
+        chapter: 'XIV — Aos que lerem depois',
+        title: 'Não me chamem de monstro tão cedo',
+        body: [`Talvez você deseje decidir o que sou antes de fechar este livro. Vilão. Médico. Profanador. Libertador. Anti-herói, se precisar de uma palavra elegante para evitar o desconforto.`, `Eu sou o filho de uma mulher boa que foi descartada quando deixou de ser útil. Sou o menino que dormiu entre dejetos para que homens honrados pudessem manter as mãos limpas. Sou aquele que aprendeu que corpos são tratados como ferramentas muito antes de eu tocar em um bisturi.`],
+        quote: 'Se cruzei a linha, leitor, diga-me: quem a desenhou? E por que ela sempre esteve depois de mim?'
+      },
+      {
+        chapter: 'Nota final',
+        title: 'Fecho',
+        body: [`Não peço perdão. O perdão exige que eu aceite primeiro a jurisdição moral daqueles que sobreviveram inteiros.`, `Se minhas páginas forem encontradas ao lado de agulhas, mapas e recipientes lacrados, não as queimem. Leiam-nas. Depois olhem para os seus próprios dedos, suas pernas, seus olhos perfeitos, e agradeçam por nunca terem precisado perguntar quanto custa ser considerado gente.`],
+        quote: '— Ivan Von Richten'
+      }
+    ];
+
+    const blankPage = { chapter: '', title: '', body: [''], quote: '' };
+    const mobileQuery = window.matchMedia('(max-width: 900px)');
+    let currentPageIndex = 0;
+    let animating = false;
+    const leftPage = document.getElementById('leftPage');
+    const rightPage = document.getElementById('rightPage');
+    const book = document.getElementById('book');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const counter = document.getElementById('counter');
+
+    function isSinglePage() {
+      return mobileQuery.matches;
+    }
+
+    function pageHTML(page, side, number) {
+      const coverClass = page.cover ? ' cover-page' : '';
+      const dropClass = page.drop ? ' drop' : '';
+      const body = (page.body || []).map((text, idx) => `<p class="${idx === 0 ? dropClass.trim() : ''}">${text}</p>`).join('');
+      const smudge = page.title ? '<span class="smudge" style="left:18%; top:62%"></span>' : '';
+      const blood = number > 8 && side === 'right' ? '<span class="bloodmark"></span>' : '';
+      const seal = page.cover ? '<div class="seal">V</div>' : '';
+      return `
+        <div class="content${coverClass}">
+          ${smudge}${blood}${seal}
+          <div class="chapter">${page.chapter || '&nbsp;'}</div>
+          <h2>${page.title || '&nbsp;'}</h2>
+          ${body}
+          ${page.quote ? `<div class="quote">${page.quote}</div>` : ''}
+          <div class="folio">${number ? String(number).padStart(2,'0') : ''}</div>
+        </div>`;
+    }
+
+    function renderSpread() {
+      if (isSinglePage()) {
+        currentPageIndex = Math.max(0, Math.min(currentPageIndex, pages.length - 1));
+        leftPage.style.display = 'none';
+        rightPage.style.display = 'block';
+        rightPage.innerHTML = pageHTML(pages[currentPageIndex] || blankPage, 'right', currentPageIndex + 1);
+        prevBtn.disabled = currentPageIndex === 0 || animating;
+        nextBtn.disabled = currentPageIndex >= pages.length - 1 || animating;
+        counter.textContent = `Página ${currentPageIndex + 1} de ${pages.length}`;
+        return;
+      }
+
+      const spreadIndex = Math.floor(currentPageIndex / 2);
+      const leftIdx = spreadIndex * 2;
+      const rightIdx = leftIdx + 1;
+      currentPageIndex = leftIdx;
+      leftPage.style.display = 'block';
+      leftPage.innerHTML = pageHTML(pages[leftIdx] || blankPage, 'left', leftIdx + 1);
+      rightPage.innerHTML = pageHTML(pages[rightIdx] || blankPage, 'right', rightIdx + 1 <= pages.length ? rightIdx + 1 : '');
+      prevBtn.disabled = spreadIndex === 0 || animating;
+      nextBtn.disabled = rightIdx >= pages.length - 1 || animating;
+      counter.textContent = `Páginas ${leftIdx + 1}-${Math.min(rightIdx + 1, pages.length)} de ${pages.length}`;
+    }
+
+    function createTurningPage(direction) {
+      const div = document.createElement('div');
+      const front = document.createElement('div');
+      const back = document.createElement('div');
+
+      if (isSinglePage()) {
+        const targetIdx = currentPageIndex + (direction === 'next' ? 1 : -1);
+        div.className = 'turning-page single' + (direction === 'prev' ? ' back' : '');
+        front.className = 'face page right';
+        back.className = 'face back-face page right';
+        front.innerHTML = pageHTML(pages[currentPageIndex] || blankPage, 'right', currentPageIndex + 1);
+        back.innerHTML = pageHTML(pages[targetIdx] || blankPage, 'right', targetIdx + 1);
+      } else {
+        const spreadIndex = Math.floor(currentPageIndex / 2);
+        div.className = 'turning-page' + (direction === 'prev' ? ' back' : '');
+        front.className = 'face page ' + (direction === 'prev' ? 'left' : 'right');
+        back.className = 'face back-face page ' + (direction === 'prev' ? 'right' : 'left');
+
+        if (direction === 'next') {
+          const currentRightIdx = spreadIndex * 2 + 1;
+          const nextLeftIdx = spreadIndex * 2 + 2;
+          front.innerHTML = pageHTML(pages[currentRightIdx] || blankPage, 'right', currentRightIdx + 1);
+          back.innerHTML = pageHTML(pages[nextLeftIdx] || blankPage, 'left', nextLeftIdx + 1);
+        } else {
+          const currentLeftIdx = spreadIndex * 2;
+          const prevRightIdx = spreadIndex * 2 - 1;
+          front.innerHTML = pageHTML(pages[currentLeftIdx] || blankPage, 'left', currentLeftIdx + 1);
+          back.innerHTML = pageHTML(pages[prevRightIdx] || blankPage, 'right', prevRightIdx + 1);
+        }
+      }
+
+      div.appendChild(front);
+      div.appendChild(back);
+      return div;
+    }
+
+    function turn(direction) {
+      if (animating) return;
+      const step = isSinglePage() ? 1 : 2;
+      const target = currentPageIndex + (direction === 'next' ? step : -step);
+      if (target < 0 || target >= pages.length) return;
+
+      animating = true;
+      book.classList.add('is-turning');
+      prevBtn.disabled = true;
+      nextBtn.disabled = true;
+      const turning = createTurningPage(direction);
+      book.appendChild(turning);
+
+      const finishTurn = () => {
+        currentPageIndex = target;
+        turning.remove();
+        book.classList.remove('is-turning');
+        animating = false;
+        renderSpread();
+      };
+
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        finishTurn();
+        return;
+      }
+
+      turning.addEventListener('transitionend', finishTurn, { once: true });
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          turning.classList.add(direction === 'next' ? 'flip-next' : 'flip-prev');
+        });
+      });
+    }
+
+    nextBtn.addEventListener('click', () => turn('next'));
+    prevBtn.addEventListener('click', () => turn('prev'));
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowRight') turn('next');
+      if (event.key === 'ArrowLeft') turn('prev');
+    });
+
+    let startX = 0;
+    let startY = 0;
+    book.addEventListener('pointerdown', (event) => {
+      startX = event.clientX;
+      startY = event.clientY;
+    });
+
+    book.addEventListener('pointerup', (event) => {
+      const dx = event.clientX - startX;
+      const dy = event.clientY - startY;
+      if (Math.abs(dx) > 55 && Math.abs(dx) > Math.abs(dy) * 1.35) {
+        turn(dx < 0 ? 'next' : 'prev');
+        return;
+      }
+      if (Math.abs(dx) < 8 && Math.abs(dy) < 8) {
+        const rect = book.getBoundingClientRect();
+        turn(event.clientX > rect.left + rect.width / 2 ? 'next' : 'prev');
+      }
+    });
+
+    mobileQuery.addEventListener('change', renderSpread);
+    renderSpread();
+  </script>
+
+</body>
+</html>
