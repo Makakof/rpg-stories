@@ -1,0 +1,415 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Eberron: Das Cinzas da Última Guerra</title>
+<style>
+  @import url("https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Marck+Script&family=Nothing+You+Could+Do&display=swap");
+  :root { --parchment:#c2a77b; --ink:#292019; --muted:#c4b5a0; }
+  * { box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { margin:0; background:#110f0d; color:#e7ddcb; font-family:Georgia,"Times New Roman",serif; }
+  .environment { position:relative; isolation:isolate; min-height:100vh; padding:clamp(26px,4vw,66px) clamp(12px,3vw,50px) 65px; overflow:hidden;
+    background:radial-gradient(ellipse 80% 50% at 50% 22%, #453d33 0%, #292720 50%, #0b0c0c 100%); }
+  .environment:before { content:""; position:absolute; inset:0; pointer-events:none; z-index:-1;
+    background:repeating-linear-gradient(13deg, transparent 0 40px, rgba(0,0,0,.10) 42px 44px, transparent 47px 100px),
+    radial-gradient(ellipse at 8% 8%, rgba(193,123,53,.18), transparent 25%),
+    radial-gradient(ellipse at 90% 58%, rgba(0,0,0,.47), transparent 48%); }
+  .heading { position:relative; z-index:3; max-width:1500px; margin:0 auto 23px; display:flex; justify-content:space-between; gap:16px; align-items:end; }
+  .eyebrow { color:#b19b7e; font:600 10px/1.6 Georgia,serif; text-transform:uppercase; letter-spacing:.32em; }
+  h1 { font-weight:400; margin:6px 0 4px; letter-spacing:.03em; font-size:clamp(27px,3vw,44px); color:#e7dbc5; text-shadow:0 2px 6px #000; }
+  .subtitle { font-size:13px; font-style:italic; color:#ab9a84; margin:0; }
+  .index { align-self:center; opacity:.7; font-size:11px; letter-spacing:.19em; text-transform:uppercase; white-space:nowrap; }
+
+  .table { position:relative; width:min(100%,1560px); margin:auto; min-height:875px; padding:56px 6.1% 83px;
+    border:1px solid #5e4c39; outline:1px solid rgba(0,0,0,.38); outline-offset:-8px; overflow:hidden;
+    background:
+      linear-gradient(90deg, transparent 0 22.5%,rgba(10,9,8,.65) 22.7%,rgba(172,120,72,.10) 23.15%,transparent 23.4% 49.3%,rgba(11,10,9,.73) 49.5%,rgba(181,120,78,.13) 49.8%, transparent 50.1% 75.8%,rgba(8,7,6,.70) 76%,rgba(173,117,75,.11) 76.4%, transparent 76.8%),
+      repeating-linear-gradient(94deg, rgba(0,0,0,.12) 0 2px,transparent 2px 4px, rgba(219,174,110,.025) 4px 7px,transparent 7px 13px),
+      repeating-linear-gradient(0deg,rgba(0,0,0,.08) 0 1px,transparent 1px 49px),
+      linear-gradient(103deg,#3b3027 0%,#513927 25%,#30241d 52%,#503a29 79%,#291e19 100%);
+    box-shadow:0 30px 60px #000b, inset 0 0 135px #080706cb, inset 0 0 5px #a7794d5c; }
+  .table:before { content:""; position:absolute; inset:0; pointer-events:none;
+    background:radial-gradient(ellipse at 48% 42%,transparent 28%,#080807a0 100%),
+      linear-gradient(169deg,transparent 18%,#100c0988 18.1%,transparent 18.35% 48%,#170d0b99 48.2%,transparent 48.45% 78%,#0b0b0977 78.2%,transparent 78.5%);
+    mix-blend-mode:multiply; }
+  .table:after { content:""; position:absolute; inset:12px; pointer-events:none; border:1px solid rgba(229,189,122,.05); box-shadow:inset 0 0 70px #0008; }
+  #table-stains { position:absolute; left:0; top:0; width:100%; height:100%; z-index:1; pointer-events:none; }
+  .crack { position:absolute; z-index:1; height:2px; background:linear-gradient(90deg,transparent,#0b0807 14%,#090807 64%,transparent); box-shadow:0 1px 0 rgba(221,157,98,.10); transform-origin:left; opacity:.9; }
+  .crack.one { left:0;top:21%;width:24%;transform:rotate(19deg); }
+  .crack.two { right:0;top:68%;width:31%;transform:rotate(-26deg); }
+  .crack.three { left:25%;bottom:6%;width:22%;transform:rotate(-7deg); }
+
+  .artifact { position:absolute; pointer-events:none; z-index:2; }
+  .casing { width:27px; height:8px; border-radius:2px 5px 5px 2px; background:linear-gradient(#b29b60,#614e2c 45%,#b39c60 60%,#40331c);box-shadow:1px 2px 3px #000a, inset 3px 0 0 #5c4421; }
+  .casing:before { content:""; position:absolute;left:-3px;top:-1px;height:10px;width:5px;border-radius:2px;background:#806333; }
+  .pin { width:10px; height:10px; border-radius:50%; background:radial-gradient(circle at 35% 32%,#bcb4a0,#494338 60%,#1b1a17); box-shadow:1px 2px 4px #000; }
+  .shard { width:60px;height:12px; background:linear-gradient(170deg,#7c807d,#302f30 30%,#9c9b90 42%,#242525 75%); clip-path:polygon(0 39%,100% 0,68% 53%,100% 100%,0 75%); opacity:.65; filter:drop-shadow(2px 2px 2px #000); }
+  .ash {width:70px;height:33px; background:radial-gradient(ellipse,rgba(2,2,2,.8),rgba(15,13,11,.3) 50%,transparent 75%);filter:blur(3px)}
+
+  /* The sheets do not move, float, animate, or react to hover. */
+  .sheets { position:relative; z-index:3; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); align-items:start; gap:clamp(15px,2vw,33px); }
+  .sheet-wrap { position:relative; min-width:0; filter:drop-shadow(8px 15px 9px #070604b8) drop-shadow(-2px 3px 1px #0007); }
+  .sheet-wrap:nth-child(1) { transform:rotate(-3.1deg) translateY(15px); z-index:4; }
+  .sheet-wrap:nth-child(2) { transform:rotate(2.6deg) translateY(-5px); z-index:3; margin-left:-16px; margin-right:-10px; }
+  .sheet-wrap:nth-child(3) { transform:rotate(-1.8deg) translateY(35px); z-index:5; margin-left:-18px; }
+  .paper { position:relative; min-height:735px; padding:42px clamp(23px,2.15vw,38px) 52px; isolation:isolate;
+    color:var(--ink);
+    background:
+      radial-gradient(ellipse at 15% 11%,#efe0b7a8,transparent 29%),
+      radial-gradient(ellipse at 80% 74%,#7e543047,transparent 26%),
+      radial-gradient(ellipse at 48% 43%,#efe0b781,transparent 90%),
+      linear-gradient(122deg,#ad8c62,#d7ba8c 16%,#c4aa7d 65%,#94714d 100%);
+    border-radius:3px;
+    /* JS replaces the default straight edges with individually distressed outlines. */
+    clip-path:polygon(1% 0,99% 0,100% 99%,0 100%);
+  }
+  .paper:before { content:"";position:absolute;inset:0;pointer-events:none;z-index:1;
+    background:
+     linear-gradient(106deg, transparent 37%,#7c62450f 40%,#fff9dd42 41%,transparent 42%),
+     linear-gradient(176deg,transparent 68%,#7048261c 69.3%,#ffebc92b 70%,transparent 72%),
+     radial-gradient(ellipse at 50% 50%,transparent 55%,#48301963 100%);
+    mix-blend-mode:multiply; }
+  .paper:after { content:"";position:absolute;inset:0;z-index:3;pointer-events:none;
+    background:linear-gradient(90deg,#5f3a1a45,transparent 8% 92%,#48301d40),linear-gradient(0deg,#47301d57,transparent 9% 92%,#3c29154a);mix-blend-mode:multiply; }
+  .page-texture { position:absolute;inset:0;z-index:2;display:block;width:100%;height:100%;pointer-events:none; }
+  .page-content {position:relative;z-index:4;}
+  .folio { display:flex; align-items:center; justify-content:space-between; gap:10px; border-bottom:1px solid #5b493655; padding-bottom:12px; margin-bottom:24px;
+    font-family:Georgia,serif; text-transform:uppercase; font-size:10px; font-weight:bold; letter-spacing:.15em; color:#55402c; }
+  .folio .number { font-size:15px;letter-spacing:.09em;font-weight:400;color:#5d3e2b; }
+  .paper p { margin:0; font-size:clamp(20px,1.75vw,28px); line-height:1.62; letter-spacing:.012em; text-align:left;
+    text-shadow:0 1px 0 #ddc89e3d; font-style:italic; }
+  .paper p:first-letter {float:left;font-size:2.2em;line-height:.89;margin:5px 6px 0 0;color:#46281d; }
+  .sheet-wrap:nth-child(1) .paper p { font-family:"Caveat", "Segoe Print", "Bradley Hand", "Comic Neue", "Comic Sans MS", cursive; font-weight:700; transform:rotate(-.3deg); }
+  .sheet-wrap:nth-child(2) .paper p { font-family:"Marck Script", "Apple Chancery", "Lobster Two", "Lucida Handwriting", cursive; font-size:clamp(19px,1.65vw,26px); line-height:1.72; color:#34241a; transform:rotate(.15deg); }
+  .sheet-wrap:nth-child(3) .paper p { font-family:"Nothing You Could Do", "Noteworthy", "Purisa", "Segoe Print", "Comic Neue", cursive; font-size:clamp(17px,1.35vw,21px); line-height:1.62; color:#2e2118; transform:rotate(.35deg); }
+  .fin {margin-top:20px; text-align:center; font-size:15px; letter-spacing:.4em; opacity:.5;}
+  .paper .footnote {position:relative; margin-top:20px; font-style:italic;color:#735840;font-size:12px;opacity:.8;line-height:1.5;}
+  .burn { position:absolute;z-index:5;pointer-events:none; filter:blur(3px);background:radial-gradient(ellipse,#160e0ac9 2%,#482010ae 35%,#6e421160 55%,transparent 75%);mix-blend-mode:multiply; }
+  .burn.corner-tl {top:-28px;left:-33px;width:132px;height:92px;transform:rotate(-20deg)}
+  .burn.corner-br {bottom:-30px;right:-31px;width:145px;height:93px;transform:rotate(18deg)}
+  .burn.corner-tr {top:-27px;right:-50px;width:150px;height:106px;transform:rotate(26deg)}
+  .paper .hole {position:absolute;z-index:5;pointer-events:none;width:19px;height:10px;border-radius:48%; background:#1b130bc9;box-shadow:0 0 0 3px #50351d77,0 0 7px 8px #69401b38;transform:rotate(-24deg)}
+  .caption-bar {position:relative;z-index:4;max-width:1390px;margin:25px auto 0;display:flex;align-items:center;justify-content:space-between;gap:20px; color:#b3a18a;font-size:12px;letter-spacing:.075em; }
+  .caption-bar strong {font-weight:normal;color:#dac8b0;letter-spacing:.18em;text-transform:uppercase;font-size:11px;}
+  .caption-bar span:last-child {font-style:italic;letter-spacing:0;}
+  .screenreader {position:absolute;height:1px;width:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;}
+  @media (min-width:1500px) { .table {min-height:900px;padding-top:64px;} .paper {min-height:745px;} }
+  @media (max-width:1150px) {
+    .table {padding:47px 5% 75px;}
+    .sheets {gap:12px;}
+    .paper {padding:34px 22px 42px;min-height:750px;}
+    .paper p {font-size:18px;line-height:1.62;}
+    .sheet-wrap:nth-child(2){margin-left:-9px;margin-right:-9px}
+    .sheet-wrap:nth-child(3){margin-left:-9px}
+  }
+  @media (max-width:850px) {
+    .environment {padding:22px 12px 45px;}
+    .heading {padding:0 9px;}
+    .index{display:none}
+    .table { min-height:0;padding:36px max(22px,5vw) 63px; }
+    .sheets {display:flex;flex-direction:column;align-items:center;gap:0;}
+    .sheet-wrap {width:min(100%,550px);}
+    .sheet-wrap:nth-child(1){transform:rotate(-1.7deg);margin:0;}
+    .sheet-wrap:nth-child(2){transform:rotate(1.4deg);margin:-8px 0 0;}
+    .sheet-wrap:nth-child(3){transform:rotate(-.8deg);margin:-8px 0 0;}
+    .paper {min-height:0;padding:39px 30px 55px;}
+    /* Mobile: size each hand separately so the handwriting stays comfortable to read. */
+    .sheet-wrap:nth-child(1) .paper p {font-size:clamp(19px,4.8vw,22px);line-height:1.55;}
+    .sheet-wrap:nth-child(2) .paper p {font-size:clamp(19px,4.8vw,21px);line-height:1.64;}
+    .sheet-wrap:nth-child(3) .paper p {font-size:clamp(18px,4.6vw,20px);line-height:1.72;}
+    .caption-bar{flex-direction:column;align-items:start;gap:7px;padding:0 12px;}
+  }
+  @media (max-width:410px) {
+    .environment{padding-left:7px;padding-right:7px;}
+    .table {padding:28px 12px 45px;}
+    .paper {padding:32px 28px 46px;}
+    .paper {padding-left:25px;padding-right:25px;}
+    .sheet-wrap:nth-child(1) .paper p {font-size:18.5px;line-height:1.5;}
+    .sheet-wrap:nth-child(2) .paper p {font-size:18.5px;line-height:1.6;}
+    .sheet-wrap:nth-child(3) .paper p {font-size:18px;line-height:1.65;}
+    .folio{font-size:9px;letter-spacing:.08em}
+  }
+  @media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto;} }
+  @media print {
+    @page {size:A4 portrait;margin:12mm}
+    body{background:white;color:black}
+    .environment{padding:0;background:white}
+    .heading{color:black}.eyebrow,.subtitle,.index,.caption-bar{color:#555}
+    h1{color:#333;text-shadow:none}
+    .table{min-height:0;padding:0;background:none;border:none;box-shadow:none;overflow:visible}
+    .table:before,.table:after,#table-stains,.artifact,.crack{display:none}
+    .sheets{display:block}
+    .sheet-wrap,.sheet-wrap:nth-child(1),.sheet-wrap:nth-child(2),.sheet-wrap:nth-child(3){width:100%;transform:none;margin:0;filter:none;break-after:page;page-break-after:always}
+    .paper{min-height:0;clip-path:none!important;padding:25mm 19mm;background:#d8c49e!important}
+    .paper p{font-size:13.5pt}
+  }
+</style>
+</head>
+<body>
+<main class="environment">
+  <header class="heading">
+    <div>
+      <div class="eyebrow">Eberron · Arquivos Recuperados</div>
+      <h1>Eberron: Das Cinzas da Última Guerra</h1>
+      <p class="subtitle">Três folhas recuperadas de um cenário de desastre, com caligrafias distintas, como relatos de soldados diferentes.</p>
+    </div>
+    <div class="index">Registro incompleto · I / II / III</div>
+  </header>
+
+  <section class="table" aria-label="Três páginas muito danificadas de um diário sobre uma mesa destruída de guerra">
+    <canvas id="table-stains" aria-hidden="true"></canvas>
+    <span class="crack one" aria-hidden="true"></span>
+    <span class="crack two" aria-hidden="true"></span>
+    <span class="crack three" aria-hidden="true"></span>
+    <span class="artifact casing" style="left:2%;top:14%;transform:rotate(-37deg)" aria-hidden="true"></span>
+    <span class="artifact casing" style="right:3%;top:20%;transform:rotate(21deg)" aria-hidden="true"></span>
+    <span class="artifact casing" style="right:8%;bottom:10%;transform:rotate(76deg)" aria-hidden="true"></span>
+    <span class="artifact casing" style="left:10%;bottom:8%;transform:rotate(-13deg)" aria-hidden="true"></span>
+    <span class="artifact shard" style="left:9%;top:5%;transform:rotate(-27deg)" aria-hidden="true"></span>
+    <span class="artifact shard" style="right:2%;bottom:34%;transform:rotate(44deg)" aria-hidden="true"></span>
+    <span class="artifact ash" style="left:2%;bottom:27%" aria-hidden="true"></span>
+    <span class="artifact ash" style="right:3%;top:7%;width:110px;height:58px" aria-hidden="true"></span>
+
+    <div class="sheets">
+      <div class="sheet-wrap">
+        <article class="paper" aria-label="Trecho primeiro: O campo de batalha">
+          <canvas class="page-texture" data-index="0" aria-hidden="true"></canvas>
+          <div class="burn corner-tl" aria-hidden="true"></div>
+          <div class="burn corner-br" aria-hidden="true"></div>
+          <span class="hole" style="right:15px;bottom:30px" aria-hidden="true"></span>
+          <div class="page-content">
+            <div class="folio"><span>Diário de campanha</span><span class="number">I</span></div>
+            <p>O campo de batalha não é lugar para qualquer um, apesar de mandarmos crianças à guerra sem nem pensar duas vezes. Balas, mísseis mágicos e monstros, que não deveriam estar vivos, competem entre si por um alvo. Não distinguem raça, cor, idade e nem necessidade. Aos que passarem por isso e sobreviverem eu os chamo de sortudos; tiveram a sorte de serem escolhidos para se tornar mais um monstro nas trincheiras. Não se sai mais humano do que se entra em uma guerra. Não sei se os deuses olham por nós, se alguém olha por nós, mas para quem estiver ouvindo, que nos ajude.</p>
+            <div class="fin">· · ·</div>
+          </div>
+        </article>
+      </div>
+      <div class="sheet-wrap">
+        <article class="paper" aria-label="Trecho segundo: O rosto da miséria">
+          <canvas class="page-texture" data-index="1" aria-hidden="true"></canvas>
+          <div class="burn corner-tr" aria-hidden="true"></div>
+          <div class="burn corner-br" style="bottom:-37px;right:-55px" aria-hidden="true"></div>
+          <span class="hole" style="left:11px;top:17px;transform:rotate(10deg)" aria-hidden="true"></span>
+          <div class="page-content">
+            <div class="folio"><span>Frente de guerra</span><span class="number">II</span></div>
+            <p>A guerra tem muitas facetas e nenhuma delas é boa. O rosto da miséria aparece para todos. Soldados e ratos dividem trincheiras, se entreolhando, esperando a oportunidade, esperando um descuido. Feridas? Você vai ter sorte se tiver o que costurar. Mas, caso sobreviva, feridas são cobertas com uniformes inimigos, membros são arrancados sem hesitação se necessário. Ainda existem aqueles que tentam fazer o bem incontestável. O que eles ganham? Não sei, eu perguntaria ao Damian, mas ele está acabando de ficar pronto. Cuide de seus aliados, pois amanhã eles podem te manter vivo, seja tratando de seus machucados ou enchendo seu estômago.</p>
+            <div class="fin">· · ·</div>
+          </div>
+        </article>
+      </div>
+      <div class="sheet-wrap">
+        <article class="paper" aria-label="Trecho terceiro: Anarquia e insanidade">
+          <canvas class="page-texture" data-index="2" aria-hidden="true"></canvas>
+          <div class="burn corner-tl" style="top:-32px;left:-70px" aria-hidden="true"></div>
+          <div class="burn corner-br" aria-hidden="true"></div>
+          <span class="hole" style="right:13px;top:23px;transform:rotate(-43deg)" aria-hidden="true"></span>
+          <div class="page-content">
+            <div class="folio"><span>Última Grande Guerra</span><span class="number">III</span></div>
+            <p>A anarquia e a insanidade se tornarão suas maiores amigas. As pessoas dizem que paranoias destroem a sua mente, mas paranoicos ainda têm uma mente, ainda têm uma cabeça acima de seus pescoços. O que destrói sua mente são daelkyrs, são os caídos, ou, se você tiver sorte, uma bala! Aqueles que acreditavam estar seguros agora alimentam os vermes; aqueles que escolheram preservar sua sanidade morreram de fome. A confiança pode ser sua maior inimiga. Quem pisa no campo de batalha deixa para trás um pedaço da sua consciência. Aqui você não é um pai, não é um filho, nem um nobre, muito menos um fazendeiro; aqui você é só mais um.</p>
+            <div class="fin">· · ·</div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+  <footer class="caption-bar"><strong>Restos da Última Grande Guerra</strong><span>Sangue seco, fuligem, papel queimado e uma secreção negra de origem desconhecida.</span></footer>
+</main>
+<script>
+(() => {
+  'use strict';
+  // Deterministic one-time artwork. No parallax, hover movement, or animation.
+  function random(seed) { let s=seed>>>0; return () => {s=(Math.imul(1664525,s)+1013904223)>>>0;return s/4294967296;}; }
+  const between=(r,a,b)=>a+(b-a)*r();
+  function setupCanvas(canvas,w,h,limit=2){
+    const dpr=Math.min(window.devicePixelRatio||1,limit);
+    canvas.width=Math.ceil(w*dpr);canvas.height=Math.ceil(h*dpr);
+    const c=canvas.getContext('2d');c.setTransform(dpr,0,0,dpr,0,0);return c;
+  }
+  function irregularBlob(c,x,y,rx,ry,r,color,edge=20){
+    let pts=[];const count=edge;
+    for(let i=0;i<count;i++){
+      let a=i/count*Math.PI*2; let f=between(r,.72,1.27);
+      pts.push([x+Math.cos(a)*rx*f,y+Math.sin(a)*ry*f]);
+    }
+    c.beginPath();
+    c.moveTo((pts[0][0]+pts[count-1][0])/2,(pts[0][1]+pts[count-1][1])/2);
+    for(let i=0;i<count;i++){
+      const p=pts[i],q=pts[(i+1)%count];c.quadraticCurveTo(p[0],p[1],(p[0]+q[0])/2,(p[1]+q[1])/2);
+    }
+    c.closePath();c.fillStyle=color;c.fill();
+  }
+  function drop(c,x,y,rx,ry,angle,r,color){
+    c.save();c.translate(x,y);c.rotate(angle);
+    c.beginPath();c.ellipse(0,0,rx,ry,0,0,Math.PI*2);c.fillStyle=color;c.fill();
+    if(rx>2 && r()>.72){ c.beginPath();c.ellipse(-rx*.2,-ry*.2,rx*.28,ry*.15,-.5,0,Math.PI*2);c.fillStyle='rgba(242,171,133,.12)';c.fill(); }
+    c.restore();
+  }
+  function splatter(c,x,y,size,angle,r,dark=false){
+    // Dark, semi-dried red stains with irregular burst silhouette and many distinct droplets.
+    const base=dark?'rgba(7,7,10,.90)':'rgba(78,7,11,.72)';
+    const near=dark?'rgba(5,6,8,.96)':'rgba(113,11,15,.79)';
+    const center=dark?'rgba(17,17,22,.78)':'rgba(51,3,6,.76)';
+    c.save();c.translate(x,y);c.rotate(angle);
+    irregularBlob(c,0,0,size*.66,size*.38,r,base,27);
+    for(let i=0;i<8;i++){
+      const xx=between(r,-size*.59,size*.59),yy=between(r,-size*.35,size*.35);
+      irregularBlob(c,xx,yy,between(r,size*.09,size*.35),between(r,size*.08,size*.22),r,i%3===0?center:near,14);
+    }
+    for(let i=0;i<Math.floor(size*2.2);i++){
+      const a=between(r,-Math.PI,Math.PI), dist=between(r,size*.35,size*1.8);
+      const bias=(r()<.44)?between(r,.7,1.5):1;
+      const xx=Math.cos(a)*dist*bias, yy=Math.sin(a)*dist*.72;
+      const radius=Math.pow(r(),2.9)*size*.08+.35;
+      drop(c,xx,yy,radius*between(r,.6,1.9),radius*between(r,.65,1.35),a,r,r()<.25?base:near);
+    }
+    // Fine lineal streaks from pressure or a cough: droplets align in a spray direction.
+    for(let i=0;i<15;i++){
+      const f=between(r,.1,1.7),dx=size*(.34+f),dy=between(r,-size*.28,size*.28);
+      drop(c,dx,dy,between(r,.4,2.2),between(r,1.2,8)*f,-.24,r,dark?'rgba(9,9,11,.85)':'rgba(97,8,12,.79)');
+    }
+    c.restore();
+  }
+  function smear(c,x,y,scale,angle,r,dark=false){
+    c.save();c.translate(x,y);c.rotate(angle);
+    for(let i=0;i<10;i++){
+      let sy=between(r,-22,22)*scale;
+      let len=between(r,42,175)*scale;
+      c.beginPath();c.moveTo(-len*.45,sy);
+      c.bezierCurveTo(-len*.05,sy-between(r,2,14)*scale,len*.25,sy+between(r,-7,7)*scale,len*.5,sy-between(r,4,12)*scale);
+      c.lineWidth=between(r,1.1,6)*scale;c.lineCap='round';
+      c.strokeStyle=dark?'rgba(8,8,13,.46)':'rgba(83,7,11,.31)';c.stroke();
+    }
+    c.restore();
+  }
+  function grit(c,w,h,r,n){
+    for(let i=0;i<n;i++){
+      const x=r()*w,y=r()*h,sz=between(r,.2,1.7);
+      c.fillStyle=r()<.63?'rgba(43,29,18,.16)':'rgba(246,221,163,.17)';
+      c.fillRect(x,y,sz,sz*between(r,.3,1.4));
+    }
+  }
+  function fold(c,w,h,r){
+    // Folds and creases are angled rather than perfectly horizontal lines.
+    const x=between(r,w*.05,w*.95),y=between(r,h*.13,h*.86),a=between(r,-1.2,.8),len=between(r,60,210);
+    c.save();c.translate(x,y);c.rotate(a);
+    const g=c.createLinearGradient(-2,0,5,0);g.addColorStop(0,'rgba(54,36,22,.02)');g.addColorStop(.35,'rgba(61,42,23,.18)');g.addColorStop(.58,'rgba(255,238,190,.13)');g.addColorStop(1,'rgba(62,39,20,0)');
+    c.fillStyle=g;c.fillRect(-2,-len/2,7,len);c.restore();
+  }
+  function edgeDamage(c,w,h,r){
+    // Dirty scorch, brittle paper fibers, and torn corner discoloration.
+    for(let i=0;i<25;i++){
+      const edge=Math.floor(r()*4);let x=edge===0?between(r,0,30):edge===1?between(r,w-34,w):between(r,0,w);
+      let y=edge===2?between(r,0,25):edge===3?between(r,h-32,h):between(r,0,h);
+      irregularBlob(c,x,y,between(r,5,28),between(r,4,33),r,'rgba(65,43,20,.10)',15);
+    }
+    for(let i=0;i<180;i++){
+      let x,y; const edge=Math.floor(r()*4);
+      if(edge===0){x=between(r,1,16);y=r()*h;}
+      else if(edge===1){x=w-between(r,1,16);y=r()*h;}
+      else if(edge===2){x=r()*w;y=between(r,1,18);}
+      else {x=r()*w;y=h-between(r,1,18);}
+      c.fillStyle='rgba(61,36,19,'+between(r,.04,.17)+')';c.fillRect(x,y,between(r,1,6),between(r,1,8));
+    }
+  }
+  function paintPage(canvas,idx){
+    const paper=canvas.closest('.paper'),w=paper.clientWidth,h=paper.clientHeight;
+    const c=setupCanvas(canvas,w,h);const r=random(1117+idx*1409);
+    grit(c,w,h,r,3400);edgeDamage(c,w,h,r);
+    for(let j=0;j<7;j++)fold(c,w,h,r);
+    // Brown water damage (diffuse halos made of translucent overlapping contours).
+    const water=(x,y,rx,ry)=>{
+      for(let i=6;i>=0;i--){irregularBlob(c,x,y,rx*(.45+i*.11),ry*(.45+i*.11),r,'rgba(91,53,29,'+(i===0?.021:.008)+')',34);}
+    };
+    if(idx===0){
+      water(w*.18,h*.13,65,98);water(w*.86,h*.78,69,92);
+      splatter(c,w*.11,h*.10,30,-.58,r,false);
+      smear(c,w*.83,h*.84,.53,-1.14,r,false);
+      splatter(c,w*.90,h*.87,24,-.9,r,false);
+      // Black sputum mostly near right margin / upper section.
+      splatter(c,w*.93,h*.19,31,-1.03,r,true);
+      splatter(c,w*.84,h*.24,13,-.92,r,true);
+      smear(c,w*.93,h*.17,.44,-.85,r,true);
+    } else if(idx===1){
+      water(w*.88,h*.19,79,106);water(w*.13,h*.79,58,104);
+      splatter(c,w*.91,h*.81,33,.52,r,false);
+      splatter(c,w*.83,h*.74,14,.69,r,false);
+      smear(c,w*.90,h*.83,.52,-.63,r,false);
+      splatter(c,w*.018,h*.32,23,-.65,r,true);
+      splatter(c,w*.015,h*.41,10,-.95,r,true);
+      smear(c,w*.018,h*.34,.34,-1.17,r,true);
+    } else {
+      water(w*.11,h*.22,87,115);water(w*.81,h*.86,80,90);
+      splatter(c,w*.028,h*.12,27,.75,r,false);
+      splatter(c,w*.025,h*.18,12,1.20,r,false);
+      smear(c,w*.04,h*.11,.37,.7,r,false);
+      splatter(c,w*.985,h*.50,24,-1.2,r,true);
+      splatter(c,w*.98,h*.57,10,-1.42,r,true);
+      smear(c,w*.995,h*.47,.32,-.88,r,true);
+    }
+    // Hundreds of fine impact specks, dark dried clusters, never uniform decorative circles.
+    for(let i=0;i<175;i++){
+      const corner=idx%2===0?{x:w*.87,y:h*.12}:{x:w*.09,y:h*.78};
+      const xx=corner.x+between(r,-65,65),yy=corner.y+between(r,-54,54);
+      if(r()<.5)drop(c,xx,yy,between(r,.25,1.7),between(r,.3,2.5),r()*3,r,r()<.55?'rgba(71,6,10,.33)':'rgba(7,8,10,.29)');
+    }
+  }
+  function paintTable(){
+    const canvas=document.querySelector('#table-stains');const t=document.querySelector('.table');
+    const w=t.clientWidth,h=t.clientHeight,c=setupCanvas(canvas,w,h),r=random(88702);
+    grit(c,w,h,r,2400);
+    splatter(c,w*.095,h*.35,53,-.19,r,false);
+    splatter(c,w*.90,h*.09,35,.62,r,false);
+    splatter(c,w*.89,h*.77,62,.4,r,false);
+    splatter(c,w*.30,h*.92,26,-.93,r,false);
+    splatter(c,w*.05,h*.66,44,1.16,r,true);
+    splatter(c,w*.93,h*.44,59,-.30,r,true);
+    splatter(c,w*.78,h*.95,42,1.24,r,true);
+    smear(c,w*.07,h*.36,.9,-.35,r,false);
+    smear(c,w*.91,h*.48,1.1,-.85,r,true);
+    smear(c,w*.90,h*.77,1.2,-.32,r,false);
+    // scattered soot and splinter dust
+    for(let i=0;i<250;i++){
+      const x=r()*w,y=r()*h;
+      drop(c,x,y,between(r,.15,1.1),between(r,.3,2.3),between(r,0,6.28),r,r()<.52?'rgba(6,6,6,.22)':'rgba(113,88,58,.15)');
+    }
+  }
+  function makeRaggedEdge(el,idx){
+    const r=random(901+idx*191),pts=[];
+    // A cut made of many tiny irregular fibrous tears. The larger dents mimic missing bites.
+    const sides=4,parts=75;
+    const corner=[[1,1],[99,1],[99,99],[1,99]];
+    for(let s=0;s<sides;s++){
+      const [x0,y0]=corner[s],[x1,y1]=corner[(s+1)%sides];
+      for(let i=0;i<parts;i++){
+        const p=i/parts; let rx=x0+(x1-x0)*p,ry=y0+(y1-y0)*p;
+        let d=between(r,-.5,.65);
+        // missing scraps on two or three different stretches
+        const breaks=idx===0?[.12,.67]:idx===1?[.19,.53,.84]:[.07,.43,.89];
+        for(const b of breaks)if(Math.abs(p-b)<.036 && (s===0 || s===2 || (idx===2&&s===1)))d+=((.036-Math.abs(p-b))/.036)*between(r,1.1,2.5);
+        if(s===0)ry+=d; if(s===1)rx-=d;if(s===2)ry-=d;if(s===3)rx+=d;
+        pts.push(rx.toFixed(2)+'% '+ry.toFixed(2)+'%');
+      }
+    }
+    el.style.clipPath='polygon('+pts.join(',')+')';
+  }
+  let frame=0;
+  function render(){
+    document.querySelectorAll('.paper').forEach((el,i)=>{
+      makeRaggedEdge(el,i);
+      paintPage(el.querySelector('canvas'),i);
+    });
+    paintTable();
+  }
+  window.addEventListener('resize',()=>{cancelAnimationFrame(frame);frame=requestAnimationFrame(render)},{passive:true});
+  // Only render when loaded / resized; nothing in this scene continuously moves.
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',render,{once:true});else render();
+  // Handwriting may arrive after initial layout on mobile connections.
+  // Repaint the static stains to the final paper dimensions once fonts are ready.
+  if(document.fonts && document.fonts.ready){document.fonts.ready.then(()=>requestAnimationFrame(render)).catch(()=>{});}
+})();
+</script>
+</body>
+</html>
